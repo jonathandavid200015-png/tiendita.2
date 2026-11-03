@@ -570,6 +570,53 @@ body.has-cart .toast{bottom:calc(170px + env(safe-area-inset-bottom))}
 .ticket-wrap{filter:none}
 .ticket .t-perf{border-top:1px solid var(--line);margin:2px 0}
 .ticket .t-perf::before,.ticket .t-perf::after{display:none}
+.rep-tabs{align-self:flex-start}
+.inv-hero{min-height:0;gap:8px}
+.inv-hero .wd-v{margin-bottom:4px}
+.inv-rows{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.inv-rows div{background:rgba(255,255,255,.14);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.inv-rows span{font-size:12.5px;opacity:.85}.inv-rows b{font-size:20px;letter-spacing:-.02em}
+.inv-split{background:rgba(255,255,255,.2);margin-top:8px;height:14px}
+.inv-split>div:first-child{background:rgba(255,255,255,.55)}.inv-split>div:last-child{background:#7fe0a8}
+.inv-leg{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;font-weight:600}
+.inv-leg span{display:inline-flex;align-items:center;gap:6px}.inv-leg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.inv-leg .l1{background:rgba(255,255,255,.55)}.inv-leg .l2{background:#7fe0a8}
+.recup2{padding:12px 0 4px}
+.tprod td{vertical-align:middle}
+.minibar{display:inline-block;width:44px;height:6px;border-radius:4px;background:var(--surface-300);margin-right:6px;vertical-align:middle;overflow:hidden}
+.minibar i{display:block;height:100%;background:var(--brand)}
+.li.ind{align-items:flex-start;padding:12px 0}
+.ind-v{font-size:16px;text-align:right;max-width:46%;flex:none}
+.tips{display:grid;gap:10px}
+@media (min-width:900px){.tips{grid-template-columns:1fr 1fr}}
+.tip{background:var(--surface-200);border-radius:20px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.tip h3{font-size:16px;line-height:21px;margin:2px 0 4px}
+.tip p{font-size:14.5px;line-height:20px}
+.tip-ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;flex:none}
+.t-alta .tip-ic{background:var(--danger-soft);color:var(--danger)}
+.t-media .tip-ic{background:var(--accent-soft);color:var(--accent-text)}
+.t-info .tip-ic{background:var(--gain-soft);color:var(--gain)}
+.tip-lab{font-size:12px;font-weight:700;color:var(--ink-muted)}
+.tip-base{font-size:12.5px;color:var(--ink-muted);margin-top:6px;font-style:italic}
+.li.regla{align-items:flex-start;padding:12px 0}
+.rn{width:26px;height:26px;border-radius:50%;background:var(--brand-soft);color:var(--brand-text);display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;margin-top:1px}
+.card .list .li.regla+.li::before,.g-list>.li.regla+.li::before{left:38px}
+.g-list>.li.ind+.li::before{left:0}
+.salud{background:var(--surface-200);border-radius:24px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.salud-top{display:flex;gap:12px;align-items:flex-start}
+.salud-top h2{font-size:22px;line-height:27px;margin:2px 0}
+.salud-ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none}
+.s-ok .salud-ic{background:var(--gain-soft);color:var(--gain)} .s-warn .salud-ic{background:var(--accent-soft);color:var(--accent-text)}
+.s-bad .salud-ic{background:var(--danger-soft);color:var(--danger)} .s-na .salud-ic{background:var(--surface-300);color:var(--ink-muted)}
+.s-ok h2{color:var(--gain)} .s-bad h2{color:var(--danger)} .s-warn h2{color:var(--accent-text)}
+.sem{display:flex;flex-direction:column}
+.sem-r{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+.sem-v{flex:none;text-align:right;font-size:15px}
+.dot{width:12px;height:12px;border-radius:50%;flex:none;margin-top:5px;background:var(--surface-300)}
+.dot.big{width:14px;height:14px;margin-top:0}
+.d-ok{background:#2f9e5f}.d-warn{background:#e8a317}.d-bad{background:#d23c2a}.d-na{background:#c4b6aa}
+.salud-w .wd-m{font-size:17px}
+.s-ok.salud-w .wd-m{color:var(--gain)} .s-bad.salud-w .wd-m{color:var(--danger)} .s-warn.salud-w .wd-m{color:var(--accent-text)}
 .hide-m{display:none}
 @media (min-width:700px){.hide-m{display:initial}}
 </style>
@@ -780,6 +827,7 @@ function vInicio(){
     <button class="wd wd-due" data-a="go" data-v="fiados"><span class="wd-k">Te deben</span><b class="wd-v">${fmt(porCobrar)}</b><span class="wd-s">${nDeud?`${nDeud} cliente${nDeud===1?'':'s'}, cobro ${dias<=0?'hoy':`en ${dias} día${dias===1?'':'s'}`}`:'Nadie te debe'}</span></button>
     <section class="wd"><span class="wd-k">Hoy</span><b class="wd-v">${fmt(hoyT)}</b><span class="wd-s">${hoyV.length?`${hoyV.length} venta${hoyV.length===1?'':'s'}`:'Sin ventas todavía'}</span></section>
     <button class="wd" data-a="irPedido"><span class="wd-k">Por reponer</span><b class="wd-v ${bajos.length?'neg':''}">${bajos.length}</b><span class="wd-s">${!prodsConf.length?'Configura tus productos':bajos.length?`producto${bajos.length===1?'':'s'} con pocas unidades`:'Inventario en orden'}</span></button>
+    ${(()=>{const S=salud();return `<button class="wd wd-wide salud-w s-${S.estado}" data-a="irSalud"><span class="wd-k">¿Cómo voy?</span><div class="row" style="gap:10px"><span class="dot d-${S.estado} big"></span><b class="wd-m">${S.titulo}</b></div><span class="wd-s">${S.estado==='na'?S.frase:`${S.cuenta.ok} en verde, ${S.cuenta.warn} en amarillo, ${S.cuenta.bad} en rojo. Toca para ver el detalle.`}</span></button>`})()}
     ${(topG&&(topG.gan>0||topU.unid>0))?`<section class="wd wd-wide"><span class="wd-k">Lo que más se mueve${vq.length?'':' (histórico)'}</span>
       <div class="wd-pair"><div class="row" style="gap:10px;min-width:0">${sello(topG.nombre)}<div style="min-width:0"><span class="small muted">Deja más ganancia</span><b class="ellipsis" style="display:block">${esc(topG.nombre)}</b></div></div>
       <div class="row" style="gap:10px;min-width:0">${sello(topU.nombre)}<div style="min-width:0"><span class="small muted">Se vende más</span><b class="ellipsis" style="display:block">${esc(topU.nombre)}</b></div></div></div></section>`:''}
@@ -1001,6 +1049,163 @@ function vCompras(){
   <span class="small muted">${c.items.map(i=>i.cajas?`${fmtN(i.cajas)} caja${i.cajas===1?'':'s'} ${esc(i.nombre)}`:`${i.cant}× ${esc(i.nombre)}`).join(', ')}</span></div></div>`).join('')}</div>`:`<p class="muted empty">Aún no registras compras. Cuando llegue mercancía, regístrala para sumar al inventario.</p>`}</div>`;
 }
 
+/* ---------- Reportes: Mi negocio y Consejos ---------- */
+function datosNegocio(){
+  const AC=analisisCobro(),ahora=Date.now();
+  const prods=D.productos.map(p=>{const st=Math.max(0,p.stock||0);return{p,st,inv:st*p.costo,ven:st*p.precio,gan:st*(p.precio-p.costo),mk:p.costo?(p.precio-p.costo)/p.costo:NaN}});
+  const inv=prods.reduce((a,x)=>a+x.inv,0),ven=prods.reduce((a,x)=>a+x.ven,0),gan=ven-inv;
+  /* ritmo de venta: últimos 14 días (o desde la primera venta si es más reciente) */
+  const primera=D.ventas.length?Math.min(...D.ventas.map(v=>+new Date(v.fecha))):null;
+  const dias=primera?Math.max(1,Math.min(14,(ahora-primera)/864e5)):0,desde=ahora-dias*864e5;
+  const und={};let ventasRec=0,nRec=0;
+  D.ventas.forEach(v=>{if(+new Date(v.fecha)>=desde){nRec++;ventasRec+=totV(v);v.items.forEach(i=>und[i.productoId]=(und[i.productoId]||0)+i.cant)}});
+  prods.forEach(x=>{x.vend=und[x.p.id]||0;x.porDia=dias?x.vend/dias:0;x.diasInv=x.porDia>0?x.st/x.porDia:null});
+  const costoDia=prods.reduce((a,x)=>a+x.porDia*x.p.costo,0);
+  const diasInv=costoDia>0?inv/costoDia:null;
+  /* desde que empezaste */
+  const invertido=D.compras.reduce((a,c)=>a+c.items.reduce((b,i)=>b+i.cant*i.costo,0),0);
+  const contado=D.ventas.filter(v=>!esFiado(v)).reduce((a,v)=>a+totV(v),0),pagos=D.pagos.reduce((a,p)=>a+p.monto,0),cobrado=contado+pagos;
+  let ganCob=0,ventasTot=0,costoTot=0,fiadoTot=0;
+  D.ventas.forEach(v=>{const t=totV(v),c=cosV(v),fr=esFiado(v)?(t?(t-(AC[v.id]?.debe??t))/t:1):1;ganCob+=(t-c)*fr;ventasTot+=t;costoTot+=c;if(esFiado(v))fiadoTot+=t});
+  const porCobrar=deudores().reduce((a,x)=>a+x.s,0);
+  return{AC,prods,inv,ven,gan,dias,nRec,ventasRec,costoDia,diasInv,invertido,cobrado,contado,pagos,ganCob,ventasTot,costoTot,fiadoTot,porCobrar,
+    margenEsp:ven?gan/ven:NaN,mkEsp:inv?gan/inv:NaN,fiadoShare:ventasTot?fiadoTot/ventasTot:NaN,ticket:D.ventas.length?ventasTot/D.ventas.length:0};
+}
+const pesos=n=>fmt(n);
+function vMiNegocio(){
+  const N=datosNegocio(),pr=N.prods.filter(x=>configurado(x.p));
+  if(!pr.length)return `<div class="card empty"><p class="muted">Ponle precio y costo a tus productos para ver tu inversión.</p><button class="btn primary sm" data-a="go" data-v="productos" style="margin-top:10px">Ir a Productos</button></div>`;
+  const pRec=N.ven?N.inv/N.ven:0;
+  const hero=`<section class="wd wd-hero inv-hero"><span class="wd-k">Tienes invertido en mercancía</span><b class="wd-v">${pesos(N.inv)}</b>
+    <div class="inv-rows"><div><span>Si vendes todo recibes</span><b>${pesos(N.ven)}</b></div><div><span>Ganancia esperada</span><b>${pesos(N.gan)}</b></div></div>
+    <div class="split inv-split" role="img" aria-label="De lo que recibirías, ${pesos(N.inv)} recuperan tu inversión y ${pesos(N.gan)} son ganancia"><div style="width:${pRec*100}%"></div><div style="width:${(1-pRec)*100}%"></div></div>
+    <div class="inv-leg"><span><i class="l1"></i>Recuperas tu plata ${Math.round(pRec*100)} %</span><span><i class="l2"></i>Tu ganancia ${Math.round((1-pRec)*100)} %</span></div></section>`;
+  const kpis=`<div class="widgets">
+    <section class="wd"><span class="wd-k">Ganas por cada $1.000 invertidos</span><b class="wd-v pos">${pesos(N.mkEsp*1000)}</b><span class="wd-s">Rentabilidad esperada del ${pct(N.mkEsp)}</span></section>
+    <section class="wd"><span class="wd-k">De cada venta, es ganancia</span><b class="wd-v">${pct(N.margenEsp)}</b><span class="wd-s">El resto (${pct(1-N.margenEsp)}) es para volver a comprar</span></section>
+    <section class="wd"><span class="wd-k">Tu inventario dura</span><b class="wd-v">${N.diasInv?Math.round(N.diasInv)+' días':'—'}</b><span class="wd-s">${N.diasInv?`Al ritmo de los últimos ${Math.round(N.dias)} días`:'Se calcula cuando registres ventas'}</span></section>
+    <button class="wd wd-due" data-a="go" data-v="fiados"><span class="wd-k">Plata en fiados</span><b class="wd-v">${pesos(N.porCobrar)}</b><span class="wd-s">${N.porCobrar?'Es tuya, pero aún no la tienes':'Nadie te debe'}</span></button>
+  </div>`;
+  const recup=N.invertido?Math.min(1,N.cobrado/N.invertido):0,caja=N.cobrado-N.invertido;
+  const hist=`<section class="group"><h2 class="g-h">Desde que empezaste</h2><div class="card g-list">
+    ${N.invertido?`<div class="recup2"><div class="row between small"><span>Has recuperado <b>${pct(recup)}</b> de lo invertido</span><span class="muted">${pesos(N.cobrado)} de ${pesos(N.invertido)}</span></div><div class="pbar"><div style="width:${recup*100}%"></div></div></div>`:''}
+    <div class="li"><span class="grow">Invertido en compras</span><b class="num">${N.invertido?pesos(N.invertido):'<span class="muted small">Sin compras registradas</span>'}</b></div>
+    <div class="li"><span class="grow">Has vendido</span><b class="num">${pesos(N.ventasTot)}</b></div>
+    <div class="li"><span class="grow">Te han pagado (contado + abonos)</span><b class="num pos">${pesos(N.cobrado)}</b></div>
+    <div class="li"><span class="grow">Ganancia que ya está en tu bolsillo</span><b class="num pos">${pesos(N.ganCob)}</b></div>
+    <div class="li"><span class="grow">Rentabilidad real hasta hoy <small class="muted">(ganancia cobrada ÷ invertido)</small></span><b class="num">${N.invertido?pct(N.ganCob/N.invertido):'—'}</b></div>
+    <div class="li"><span class="grow">Valor de tu negocio hoy <small class="muted">(caja + mercancía + fiados)</small></span><b class="num">${pesos(caja+N.inv+N.porCobrar)}</b></div>
+  </div>${!N.invertido?'<p class="small muted" style="padding:0 6px">Registra tus compras en Productos → Compras para medir cuánto has recuperado.</p>':''}</section>`;
+  const tot=N.inv||1;
+  const tabla=`<section class="group"><h2 class="g-h">Por producto</h2><div class="card" style="padding:8px 16px"><div class="tablewrap"><table class="tprod"><thead><tr><th>Producto</th><th>Und</th><th>Invertido</th><th>Recibirías</th><th>Ganancia</th><th>% de tu plata</th><th>Dura</th></tr></thead><tbody>
+    ${[...pr].sort((a,b)=>b.inv-a.inv).map(x=>`<tr><td><div class="row" style="gap:8px">${sello(x.p.nombre,'sm')}<b>${esc(x.p.nombre)}</b></div></td><td>${fmtN(x.st)}</td><td>${pesos(x.inv)}</td><td>${pesos(x.ven)}</td><td class="pos"><b>${pesos(x.gan)}</b></td>
+      <td><div class="minibar"><i style="width:${x.inv/tot*100}%"></i></div>${Math.round(x.inv/tot*100)} %</td><td>${x.diasInv!=null?Math.round(x.diasInv)+' d':x.st&&N.dias?'<span class="warn">sin venta</span>':'—'}</td></tr>`).join('')}
+    </tbody><tfoot><tr><td>Total</td><td>${fmtN(pr.reduce((a,x)=>a+x.st,0))}</td><td>${pesos(N.inv)}</td><td>${pesos(N.ven)}</td><td>${pesos(N.gan)}</td><td>100 %</td><td>${N.diasInv?Math.round(N.diasInv)+' d':''}</td></tr></tfoot></table></div></div></section>`;
+  const capQ=N.costoDia*15;
+  const ind=[
+    ['Punto de recuperación',`${Math.round(pRec*100)} % de la mercancía`,`Cuando hayas vendido y cobrado ${pesos(N.inv)} (el ${Math.round(pRec*100)} % de lo que tienes, a precio de venta), ya recuperaste lo que te costó. Lo que venda después es ganancia.`],
+    ['Rentabilidad sobre la inversión',pct(N.mkEsp),`Por cada $1.000 que metes en mercancía esperas sacar ${pesos(1000+N.mkEsp*1000)}.`],
+    ['Margen',pct(N.margenEsp),`De cada venta, esa parte es ganancia. El resto no es tuyo: es la plata para reponer.`],
+    ['Días de inventario',N.diasInv?Math.round(N.diasInv)+' días':'—','Cuánto te dura lo que tienes al ritmo actual de ventas. Menos días = la plata gira más rápido.'],
+    ['Capital que necesitas por quincena',N.costoDia?pesos(capQ):'—',N.costoDia?`Es lo que cuesta la mercancía que vendes en 15 días. Como te pagan cada quincena, debes tener esa plata para reponer mientras cobras.`:'Se calcula cuando registres ventas.'],
+    ['Venta promedio',N.ticket?pesos(N.ticket):'—','Cuánto compra en promedio cada persona por venta.'],
+    ['Ventas por día',N.dias?pesos(N.ventasRec/N.dias):'—',N.dias?`Promedio de los últimos ${Math.round(N.dias)} días.`:'Se calcula cuando registres ventas.'],
+    ['Parte de las ventas que es fiado',isFinite(N.fiadoShare)?pct(N.fiadoShare):'—','Mientras más alto, más tarda en llegar la plata a tu bolsillo.'],
+  ];
+  const inds=`<section class="group"><h2 class="g-h">Indicadores, en palabras simples</h2><div class="card g-list">${ind.map(([t,v,e])=>`<div class="li ind"><div class="grow"><b>${t}</b><p class="small muted">${e}</p></div><b class="num ind-v">${v}</b></div>`).join('')}</div></section>`;
+  return `${vSalud()}${hero}${kpis}${hist}${tabla}${inds}`;
+}
+function generarConsejos(){
+  const N=datosNegocio(),out=[],pr=N.prods.filter(x=>configurado(x.p)&&x.st>0);
+  const add=(nivel,titulo,texto,base)=>out.push({nivel,titulo,texto,base});
+  if(!pr.length&&!D.ventas.length){add('alta','Termina de configurar tus productos','Ponle costo, precio y unidades a cada producto. Sin esos datos no se puede calcular tu inversión ni tu ganancia.','');return out}
+  if(N.inv>0){const c=Math.round((1-N.margenEsp)*1000);
+    add('alta',`De cada $1.000 que vendas, ${pesos(c)} no son tuyos`,`Son para volver a comprar mercancía; solo ${pesos(1000-c)} son ganancia. Usa dos bolsillos (en Nequi se llaman "Bolsillos", o dos sobres): <b>Reposición</b> y <b>Ganancia</b>. Cada vez que te paguen, reparte. Si gastas la plata de reposición, la tienda se queda sin capital aunque venda bien.`,'Profit First (La ganancia primero), Mike Michalowicz: separar el dinero por destino apenas entra.')}
+  if(!D.ventas.length)add('alta','Registra todas las ventas desde el primer día','También las de contado. En dos semanas la app te dirá qué se vende más rápido, cuántos días te dura el inventario, cuánto capital necesitas por quincena y cuándo pedir.','Lo que no se mide no se puede mejorar.');
+  if(N.invertido&&N.cobrado<N.invertido)add('media',`Has recuperado el ${pct(N.cobrado/N.invertido)} de lo invertido`,`Te faltan ${pesos(N.invertido-N.cobrado)} para recuperar tu plata. Hasta entonces, no saques ganancias para otras cosas: primero que la inversión vuelva a ti.`,'Flujo de caja: el negocio vive del efectivo, no de las ventas en papel.');
+  if(N.invertido&&N.cobrado>=N.invertido)add('info','Ya recuperaste tu inversión',`Llevas ${pesos(N.cobrado-N.invertido)} por encima de lo que invertiste. Decide cuánto reinviertes y cuánto es tu ganancia, y anótalo.`,'');
+  if(pr.length>1){const top=[...pr].sort((a,b)=>b.inv-a.inv)[0],sh=top.inv/N.inv;
+    if(sh>=.3)add('media',`El ${Math.round(sh*100)} % de tu plata está en ${top.p.nombre}`,`Son ${pesos(top.inv)} de ${pesos(N.inv)}. Si se demora en venderse o se daña, te pega duro. Mientras descubres cuánto se vende de verdad, compra de a una caja.`,'Diversificar el riesgo del inventario.')}
+  const perece=pr.filter(x=>/torta|queso|leche|dulce|arequipe|crema|postre|vaso/i.test(x.p.nombre));
+  if(perece.length)add('media','Cuida los que se vencen',`${perece.map(x=>x.p.nombre).join(', ')} pueden dañarse. Revisa la fecha al recibirlos, vende primero lo más antiguo y compra para máximo una semana de venta.`,'Rotación de inventario: lo primero que entra es lo primero que sale (PEPS).');
+  if(pr.length>2){const m=pr.filter(x=>isFinite(x.mk)),mx=Math.max(...m.map(x=>x.mk)),low=m.filter(x=>x.mk<mx*.65);
+    low.forEach(x=>{const np=x.p.precio+100,nm=(np-x.p.costo)/x.p.costo;
+      add('info',`${x.p.nombre} es el que menos deja`,`Ganas ${pct(x.mk)} sobre lo que te cuesta (el mejor deja ${pct(mx)}). A ${pesos(np)} subiría a ${pct(nm)} y ganarías ${pesos(100*x.p.uxc)} más por caja. Pruébalo una quincena y mira si se sigue vendiendo igual.`,'Fijación de precios por margen: revisa primero los productos que menos dejan.')})}
+  pr.forEach(x=>{if(x.p.uxc>=12){const sug=N.dias&&x.porDia?Math.ceil(x.porDia*3):Math.max(3,Math.round(x.p.uxc*.25));
+    if(x.p.minimo<sug*.7)add('info',`Sube el aviso de ${x.p.nombre}`,`Viene de a ${x.p.uxc} y te avisa cuando quedan ${x.p.minimo}. ${N.dias&&x.porDia?'Al ritmo actual':'Para alcanzar a pedir a tiempo'}, pon el aviso en unas ${sug} unidades (Productos → editar → "Avisarme si quedan").`,'Punto de reorden: pide antes de quedarte sin nada.')}});
+  if(N.dias>=7)pr.filter(x=>x.vend===0).forEach(x=>add('media',`No se ha vendido ${x.p.nombre}`,`En los últimos ${Math.round(N.dias)} días no salió ninguna unidad; tienes ${pesos(x.inv)} quietos ahí. Ponlo a la vista, ofrécelo o no lo vuelvas a pedir.`,'El inventario quieto es plata quieta.'));
+  if(D.ventas.length>=5&&isFinite(N.fiadoShare)&&N.fiadoShare>.5)add('media',`El ${pct(N.fiadoShare)} de lo que vendes es fiado`,`La plata para reponer te llega cada 15 días. Necesitas tener unos ${pesos(N.costoDia*15)} de capital por quincena para no quedarte sin mercancía mientras cobras.`,'Ciclo de caja: entre comprar y cobrar pasa tiempo, y ese tiempo cuesta capital.');
+  const hoy=Date.now();const viejos=deudores().filter(({c})=>{const k=cuenta(c.id);return k.pend.length&&(hoy-new Date(k.pend[0].fecha))/864e5>30});
+  if(viejos.length)add('alta',`${viejos.length===1?viejos[0].c.nombre+' tiene':viejos.length+' clientes tienen'} deudas de más de 30 días`,`${viejos.map(x=>`${x.c.nombre} (${pesos(x.s)})`).join(', ')}. No les fíes más hasta que se pongan al día y cóbrales con el estado de cuenta por WhatsApp.`,'Crédito con reglas: nadie con deudas vencidas recibe más crédito.');
+  if(deudores().length)add('info','Ponle un límite de crédito a cada persona','Una regla sencilla: nadie te debe más de lo que normalmente consume en una quincena. Así una persona que no pague no te tumba el negocio.','Gestión del riesgo de crédito.');
+  if(D.ventas.length>=10){const st=statsProd(D.ventas).filter(x=>x.gan>0).sort((a,b)=>b.gan-a.gan),tg=st.reduce((a,x)=>a+x.gan,0);
+    if(st.length>=3&&tg){const s2=(st[0].gan+st[1].gan)/tg;add('info',`${st[0].nombre} y ${st[1].nombre} dan el ${pct(s2)} de tu ganancia`,'Esos dos nunca pueden faltar. Si el proveedor sube el precio de alguno, revisa el precio de venta ese mismo día.','Principio de Pareto (80/20).')}}
+  add('info','Haz tu revisión cada día de cobro','15 minutos: mira Reportes de la quincena, cobra a los que deben, arma el pedido con la lista sugerida y descarga un respaldo.','Revisión periódica: decidir con números, no con la sensación.');
+  const ord={alta:0,media:1,info:2};return out.sort((a,b)=>ord[a.nivel]-ord[b.nivel]);
+}
+function vConsejos(){
+  const cs=generarConsejos();
+  const ico={alta:'alert',media:'fire',info:'check'},lab={alta:'Importante',media:'Atención',info:'Idea'};
+  const reglas=[
+    ['La ganancia primero','Apenas te paguen, separa la plata de reposición y la ganancia. Lo que queda en "reposición" no se toca.','Profit First, Mike Michalowicz'],
+    ['Vender no es cobrar','El fiado es plata que todavía no tienes. Lo que mantiene viva la tienda es el efectivo que entra.','Gestión del flujo de caja'],
+    ['Pocos productos dan casi toda la ganancia','Descubre cuáles son (Reportes → Ganancia vs. popularidad) y que nunca falten.','Principio de Pareto 80/20'],
+    ['El inventario es plata quieta','Compra según lo que vendes, no según la oferta del proveedor. Vende primero lo más viejo.','Rotación de inventario, PEPS'],
+    ['Crédito con reglas claras','Fecha fija de cobro, límite por persona y no fiar a quien debe de quincenas pasadas. Dilo antes de fiar, no después.','Gestión del riesgo de crédito'],
+    ['La plata de la casa, aparte','No mezcles tu plata personal con la de la tienda. Si sacas algo, que salga de la ganancia y anótalo.','Contabilidad básica de pequeños negocios'],
+    ['Mide cada quincena','Compara con la anterior: ¿vendiste más? ¿ganaste más? ¿te deben más? Decide con números.','Mejora continua'],
+  ];
+  return `<section class="group"><h2 class="g-h">Para tu tienda, hoy</h2><div class="tips">${cs.map(c=>`<article class="tip t-${c.nivel}"><span class="tip-ic">${ic(ico[c.nivel],18)}</span><div class="grow">
+    <span class="tip-lab">${lab[c.nivel]}</span><h3>${esc(c.titulo)}</h3><p>${c.texto}</p>${c.base?`<p class="tip-base">${c.base}</p>`:''}</div></article>`).join('')}</div></section>
+  <section class="group"><h2 class="g-h">Reglas de oro</h2><div class="card g-list">${reglas.map(([t,d,b],i)=>`<div class="li regla"><span class="rn">${i+1}</span><div class="grow"><b>${t}</b><p class="small muted">${d}</p><p class="tip-base">${b}</p></div></div>`).join('')}</div>
+  <p class="small muted" style="padding:0 6px">Los consejos se recalculan con tus datos cada vez que abres esta pestaña.</p></section>`;
+}
+
+/* ---------- Salud del negocio (semáforo) ---------- */
+function salud(){
+  const N=datosNegocio(),AC=N.AC,hoy=Date.now(),items=[];
+  const add=(id,nombre,estado,valor,texto)=>items.push({id,nombre,estado,valor,texto});
+  /* 1. Cobros: de lo fiado cuyo día de cobro ya pasó, cuánto te pagaron */
+  const vencidas=D.ventas.filter(v=>esFiado(v)&&quincena(new Date(v.fecha)).pago.getTime()+864e5<=hoy);
+  const due=vencidas.reduce((a,v)=>a+totV(v),0),sinPagar=vencidas.reduce((a,v)=>a+(AC[v.id]?.debe||0),0);
+  if(due>0){const r=1-sinPagar/due;add('cobros','Cobros',r>=.85?'ok':r>=.65?'warn':'bad',pct(r),r>=.85?`De lo fiado que ya debía pagarse, te pagaron el ${pct(r)}. Buen recaudo.`:`De lo que ya debieron pagarte, falta ${pesos(sinPagar)}. ${r<.65?'Están quedando muchas deudas sin cobrar.':'Cobra antes de fiar más.'}`)}
+  else add('cobros','Cobros','na','—','Todavía no ha llegado ningún día de cobro de lo que fiaste.');
+  /* 2. Deudas viejas (más de 30 días) */
+  const pendV=D.ventas.filter(v=>esFiado(v)&&(AC[v.id]?.debe||0)>.5);
+  const viejo=pendV.filter(v=>(hoy-new Date(v.fecha))/864e5>30).reduce((a,v)=>a+AC[v.id].debe,0);
+  if(N.porCobrar>0){const sh=viejo/N.porCobrar;add('morosos','Deudas viejas',viejo<=0?'ok':sh<.2?'warn':'bad',pesos(viejo),viejo<=0?'Nadie te debe de hace más de 30 días.':`${pct(sh)} de lo que te deben tiene más de 30 días. Entre más vieja una deuda, más difícil de cobrar.`)}
+  else add('morosos','Deudas viejas','ok','$ 0','Nadie te debe.');
+  /* 3. Días que tardan en pagarte */
+  const pagadas=D.ventas.filter(v=>esFiado(v)&&AC[v.id]?.pagadaEn).map(v=>(new Date(AC[v.id].pagadaEn)-new Date(v.fecha))/864e5);
+  if(pagadas.length>=3){const d=pagadas.reduce((a,b)=>a+b,0)/pagadas.length;add('dias','Te pagan en',d<=17?'ok':d<=25?'warn':'bad',Math.round(d)+' días',d<=17?'En promedio te pagan dentro de la quincena. Bien.':'En promedio te pagan después del día de cobro. Recuérdales con el estado de cuenta.')}
+  /* 4. Margen */
+  const mg=N.ventasTot?(N.ventasTot-N.costoTot)/N.ventasTot:N.margenEsp;
+  if(isFinite(mg))add('margen','Ganancia por venta',mg>=.45?'ok':mg>=.3?'warn':'bad',pct(mg),mg>=.45?'Tus precios dejan buena ganancia.':mg>=.3?'Margen justo: revisa precios de los que menos dejan.':'Ganas muy poco por venta: sube precios o busca mejor costo.');
+  /* 5. Plata atrapada en fiados */
+  const caja=N.cobrado-N.invertido,valor=Math.max(1,(N.invertido?caja:0)+N.inv+N.porCobrar);
+  if(N.porCobrar>0){const sh=N.porCobrar/valor;add('atrapada','Plata en fiados',sh<.25?'ok':sh<.4?'warn':'bad',pct(sh),`${pct(sh)} del valor de tu negocio está en manos de clientes (${pesos(N.porCobrar)}). ${sh>=.4?'Es demasiado: cobra antes de fiar más.':sh>=.25?'Vigílalo.':'Nivel sano.'}`)}
+  /* 6. Recuperación de la inversión */
+  if(N.invertido>0){const r=N.cobrado/N.invertido,dias=(hoy-Math.min(...D.compras.map(c=>+new Date(c.fecha))))/864e5,esperado=Math.min(1,dias/30);
+    add('recupera','Recuperación de la inversión',r>=1||r>=esperado*.8?'ok':r>=esperado*.5?'warn':'bad',pct(Math.min(r,9.99)),r>=1?'Ya recuperaste lo que invertiste.':`Llevas ${pct(r)} recuperado en ${Math.max(1,Math.round(dias))} día${Math.round(dias)===1?'':'s'}.`)}
+  /* 7. Rotación del inventario */
+  if(N.diasInv!=null){const d=N.diasInv;add('rotacion','El inventario te dura',d<=10?'ok':d<=21?'warn':'bad',Math.round(d)+' días',d<=10?'La mercancía gira rápido.':d<=21?'Gira lento: no compres más de lo que vendes en una semana.':'Tienes mercancía para mucho tiempo; con productos que se vencen es riesgoso.')}
+  /* 8. Ventas vs quincena anterior (a la misma altura) */
+  const q=quincena(),qp=quincena(new Date(q.ini.getTime()-864e5)),tr=hoy-q.ini.getTime();
+  const va=metricas(q,AC).ing,vp=metricas({...qp,fin:new Date(Math.min(qp.fin.getTime(),qp.ini.getTime()+tr))},AC).ing;
+  if(vp>0){const g=(va-vp)/vp;add('ventas','Ventas vs. quincena anterior',g>=0?'ok':g>-.2?'warn':'bad',(g>=0?'+':'')+pct(g),g>=0?'Vas vendiendo igual o más que la quincena pasada a esta altura.':'Vas vendiendo menos que la quincena pasada a esta altura.')}
+  const cuenta_={ok:0,warn:0,bad:0};items.forEach(i=>{if(cuenta_[i.estado]!=null)cuenta_[i.estado]++});
+  const conDatos=items.filter(i=>i.estado!=='na').length;
+  const estado=!D.ventas.length?'na':cuenta_.bad?'bad':cuenta_.warn>=2?'warn':'ok';
+  const titulo={na:'Aún sin datos suficientes',ok:'Vas bien',warn:'Vas bien, con cosas por mejorar',bad:'Cuidado: hay cosas que arreglar'}[estado];
+  const frase=estado==='na'?'Cuando registres ventas y cobros, aquí verás si el negocio va bien o mal.':estado==='ok'?`${cuenta_.ok} de ${conDatos} indicadores están en verde.`:`${items.filter(i=>i.estado==='bad'||i.estado==='warn').map(i=>i.nombre.toLowerCase()).join(', ')}.`;
+  return{estado,titulo,frase,items,cuenta:cuenta_};
+}
+function vSalud(){
+  const S=salud(),ic_={ok:'check',warn:'alert',bad:'alert',na:'chart'};
+  return `<section class="salud s-${S.estado}" aria-label="Salud del negocio"><div class="salud-top"><span class="salud-ic">${ic(ic_[S.estado],22)}</span><div style="min-width:0"><span class="wd-k">¿Cómo voy?</span><h2>${S.titulo}</h2><p class="small">${S.estado==='ok'||S.estado==='na'?S.frase:'Revisa: '+S.frase}</p></div></div>
+  <div class="sem">${S.items.map(i=>`<div class="sem-r"><span class="dot d-${i.estado}" aria-label="${{ok:'bien',warn:'regular',bad:'mal',na:'sin datos'}[i.estado]}"></span><div class="grow" style="min-width:0"><b>${i.nombre}</b><p class="small muted">${i.texto}</p></div><b class="num sem-v">${i.valor}</b></div>`).join('')}</div></section>`;
+}
+
 /* ---------- Reportes ---------- */
 function quincenaOff(n){let q=quincena();for(let i=0;i<n;i++)q=quincena(new Date(q.ini.getTime()-864e5));return q}
 const qLabel=q=>`${q.label}${q.ini.getFullYear()!==new Date().getFullYear()?' '+q.ini.getFullYear():''}`;
@@ -1050,6 +1255,8 @@ function chartHistoria(AC){
 }
 const fmtK=n=>Math.abs(n)>=1e6?'$'+(n/1e6).toFixed(1).replace('.',',')+' M':Math.abs(n)>=1e3?'$'+Math.round(n/1e3)+' mil':fmt(n);
 function vReportes(){
+  const tabs=`<div class="seg noprint rep-tabs">${[['q','Quincena'],['negocio','Mi negocio'],['consejos','Consejos']].map(([k,l])=>`<button class="${(UI.repTab||'q')===k?'on':''}" data-a="repTab" data-v="${k}">${l}</button>`).join('')}</div>`;
+  if(UI.repTab==='negocio'||UI.repTab==='consejos'){const t=UI.repTab==='negocio';return `<div class="stack reportes"><div class="printonly"><h1>${esc(D.config.nombre)} — ${t?'Mi negocio':'Consejos'}</h1><p>Impreso el ${fFechaL(new Date().toISOString())}, ${fHora(new Date().toISOString())}</p></div><div class="pagehead noprint"><div><p class="eyebrow">${t?'Tu inversión y lo que se espera de ella':'Recomendaciones con tus números'}</p><h1>Reportes</h1></div><button class="btn ghost sm" data-a="imprimir">${ic('down',16)}Imprimir / PDF</button></div>${tabs}${t?vMiNegocio():vConsejos()}</div>`}
   const AC=analisisCobro(),q=quincenaOff(UI.qOff),M=metricas(q,AC),qp=quincenaOff(UI.qOff+1);
   let qpc=qp,nDias=null;
   if(UI.qOff===0){const trans=Date.now()-q.ini.getTime();nDias=Math.max(1,Math.ceil(trans/864e5));qpc={...qp,fin:new Date(Math.min(qp.fin.getTime(),qp.ini.getTime()+trans))}}
@@ -1144,7 +1351,7 @@ function vReportes(){
   return `<div class="stack reportes">
   <div class="printonly"><h1>${esc(D.config.nombre)} — Reporte</h1><p>Quincena ${qLabel(q)} · impreso el ${fFechaL(new Date().toISOString())}, ${fHora(new Date().toISOString())}</p></div>
   <div class="pagehead noprint"><div><p class="eyebrow">Análisis</p><h1>Reportes</h1></div><button class="btn ghost sm" data-a="imprimir">${ic('down',16)}Imprimir / PDF</button></div>
-  ${nav}${s1}${s2}${s3}${s4}${s5}${s6}</div>`;
+  ${tabs}${nav}${s1}${s2}${s3}${s4}${s5}${s6}</div>`;
 }
 
 /* ===================== Modales ===================== */
@@ -1314,6 +1521,8 @@ const A={
   prodTab:d=>{UI.prodTab=d.v;if(d.v==='pedido')UI.pedido={};render()},
   fiadoTab:d=>{UI.fiadoTab=d.v;render()},
   periodo:d=>{UI.periodo=d.v;render()},
+  irSalud:()=>{UI.view='reportes';UI.repTab='negocio';render();scrollTo(0,0)},
+  repTab:d=>{UI.repTab=d.v;render();scrollTo(0,0)},
   qNav:d=>{UI.qOff=Math.max(0,UI.qOff+(+d.v));render()},
   imprimir:()=>{try{window.print()}catch(e){toast('No se pudo abrir la impresión')}},
   nuevoProd:()=>modalProducto(),
