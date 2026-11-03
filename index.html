@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -27,14 +27,6 @@
   --font:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --surface-100:#17120e;--surface-200:#211a15;--surface-300:#2e251e;--line:#3a2f26;
-  --ink:#f6efe7;--ink-muted:#bcae9f;
-  --brand:#e0a374;--on-brand:#24160c;--brand-soft:#3d2a1c;--brand-text:#e8b48a;
-  --gain:#5fd394;--gain-fill:#3fb06e;--gain-soft:#183022;
-  --accent:#f2a54a;--on-accent:#241505;--accent-soft:#3b2a13;--accent-text:#f5b566;
-  --danger:#f08a7a;--danger-soft:#3b201b;--shadow:0 1px 2px rgba(0,0,0,.35);color-scheme:dark;
-  --chart-in:#3aa36a;--chart-due:#c97a22;--chart-neutral:#5b4b3f;--age-1:#a8823a;--age-2:#c97a22;--age-3:#e0705e;}}
 :root[data-theme="dark"]{
   --surface-100:#17120e;--surface-200:#211a15;--surface-300:#2e251e;--line:#3a2f26;
   --ink:#f6efe7;--ink-muted:#bcae9f;
@@ -368,7 +360,7 @@ const ICON={
 const ic=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]}</svg>`;
 
 /* ===================== Datos ===================== */
-function vacio(){return{v:2,config:{nombre:'La Tiendita',tema:'auto'},productos:[],clientes:[],ventas:[],compras:[],pagos:[]}}
+function vacio(){return{v:2,config:{nombre:'La Tiendita',tema:'light'},productos:[],clientes:[],ventas:[],compras:[],pagos:[]}}
 const MIS_PRODUCTOS=['Torta de queso','Vaso copa dulce de leche combinado','Panelita con leche cortada','Panelita cortada con coco','Vaso galleta con dulce de leche','Galleta rizada domo','Liberales domo'];
 function inicial(){const d=vacio();MIS_PRODUCTOS.forEach(n=>d.productos.push({id:uid(),nombre:n,caja:0,uxc:0,costo:0,precio:0,stock:0,minimo:3}));return d}
 let D;
@@ -384,7 +376,8 @@ function normalizar(){
     delete v.pagado;delete v.fechaPago});
   D.v=2;
   D.productos.forEach(p=>{if(p.uxc===undefined){p.uxc=1;p.caja=p.costo||0}p.costo=p.uxc?(p.caja||0)/p.uxc:0})}
-D.config=Object.assign({nombre:'La Tiendita',tema:'auto'},D.config||{});
+D.config=Object.assign({nombre:'La Tiendita',tema:'light'},D.config||{});
+if(D.config.tema!=='dark')D.config.tema='light';
 function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){toast('No se pudo guardar en este navegador')}}
 
 const prod=id=>D.productos.find(p=>p.id===id);
@@ -448,7 +441,7 @@ const UI={view:'inicio',prev:'fiados',cid:null,cTab:'movs',prodTab:'catalogo',fi
 const NAV=[['inicio','Inicio','home'],['vender','Vender','cart'],['fiados','Fiados','book'],['productos','Productos','box'],['reportes','Reportes','chart']];
 
 /* ===================== Render ===================== */
-function aplicarTema(){const t=D.config.tema;if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=t;
+function aplicarTema(){const t=D.config.tema==='dark'?'dark':'light';document.documentElement.dataset.theme=t;
   const m=document.querySelector('meta[name=theme-color]');m.content=getComputedStyle(document.documentElement).getPropertyValue('--surface-100').trim()||'#f7f4ec';}
 function render(){
   if(UI.cliente&&!cli(UI.cliente))UI.cliente='';
@@ -973,7 +966,7 @@ function modalAjustes(){
   openModal(`<form class="stack" data-form="ajustes">
   <div class="row between"><h2>Ajustes y respaldo</h2><button type="button" class="iconbtn" data-a="close" aria-label="Cerrar">${ic('x')}</button></div>
   <label class="field"><span>Nombre de la tienda</span><input name="nombre" maxlength="30" value="${esc(D.config.nombre)}"></label>
-  <label class="field"><span>Apariencia</span><select name="tema" class="input"><option value="auto" ${t==='auto'?'selected':''}>Automática</option><option value="light" ${t==='light'?'selected':''}>Clara</option><option value="dark" ${t==='dark'?'selected':''}>Oscura</option></select></label>
+  <label class="field"><span>Apariencia</span><select name="tema" class="input"><option value="light" ${t==='light'?'selected':''}>Clara</option><option value="dark" ${t==='dark'?'selected':''}>Oscura</option></select></label>
   <div class="card" style="box-shadow:none;background:var(--surface-100)"><h3>Tus datos</h3><p class="small muted" style="margin:4px 0 12px">Se guardan en este navegador. Descarga un respaldo seguido y úsalo para pasar los datos a otro celular o computador.</p>
   <div class="row wrapflex"><button type="button" class="btn sm ghost" data-a="exportar">${ic('down',16)}Descargar respaldo</button><button type="button" class="btn sm ghost" data-a="importar">${ic('up',16)}Cargar respaldo</button></div></div>
   <div class="row wrapflex"><button type="button" class="btn sm ghost" data-a="demo">Cargar datos de ejemplo</button><button type="button" class="btn sm danger" data-a="borrarTodo">Borrar todo</button></div>
@@ -1113,11 +1106,10 @@ document.addEventListener('submit',e=>{
 $('#fileImport').addEventListener('change',e=>{
   const file=e.target.files[0];if(!file)return;const r=new FileReader();
   r.onload=()=>{try{const x=JSON.parse(r.result);if(!Array.isArray(x.productos)||!Array.isArray(x.ventas))throw 0;
-    ['clientes','compras'].forEach(k=>{if(!Array.isArray(x[k]))x[k]=[]});x.config=Object.assign({nombre:'La Tiendita',tema:'auto'},x.config||{});
+    ['clientes','compras'].forEach(k=>{if(!Array.isArray(x[k]))x[k]=[]});x.config=Object.assign({nombre:'La Tiendita',tema:'light'},x.config||{});if(x.config.tema!=='dark')x.config.tema='light';
     if(!Array.isArray(x.pagos))x.pagos=[];D=x;normalizar();save();aplicarTema();closeModal();UI.cart={};UI.pedido={};render();toast('Respaldo cargado')}catch(err){toast('El archivo no es un respaldo válido')}};
   r.readAsText(file);e.target.value='';
 });
-matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',aplicarTema);
 
 /* ===================== Datos de ejemplo ===================== */
 function demo(){
