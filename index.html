@@ -617,6 +617,13 @@ body.has-cart .toast{bottom:calc(170px + env(safe-area-inset-bottom))}
 .d-ok{background:#2f9e5f}.d-warn{background:#e8a317}.d-bad{background:#d23c2a}.d-na{background:#c4b6aa}
 .salud-w .wd-m{font-size:17px}
 .s-ok.salud-w .wd-m{color:var(--gain)} .s-bad.salud-w .wd-m{color:var(--danger)} .s-warn.salud-w .wd-m{color:var(--accent-text)}
+.chip.promo{background:#efe3f6;color:#5b3c7a;font-weight:800}
+:root[data-theme="dark"] .chip.promo{background:#2c2236;color:#cdb3ea}
+.sell .chip.promo{align-self:flex-start;margin-top:2px}
+.promo-box{background:var(--surface-100);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.promo-in{display:flex;align-items:center;gap:8px;font-weight:700}
+.promo-in input{width:72px;min-height:44px;border:0;border-radius:10px;background:var(--surface-200);text-align:center;font-weight:800;font-size:16px}
+.promo-in input[name=promoP]{width:120px}
 .hide-m{display:none}
 @media (min-width:700px){.hide-m{display:initial}}
 </style>
@@ -644,6 +651,10 @@ function sello(nombre,cls){const w=String(nombre||'?').split(/\s+/).filter(x=>x&
   return `<span class="sello tn${h%6}${cls?' '+cls:''}" aria-hidden="true">${esc(ini)}</span>`}
 const ancho=()=>innerWidth>=1180;
 const configurado=p=>p.precio>0&&p.costo>0;
+/* Promoción "lleva N por $X": se cobra por grupos de N; lo que sobra va a precio normal */
+const tienePromo=p=>p&&p.promoN>=2&&p.promoP>0;
+function precioLinea(p,c){if(!tienePromo(p))return{total:c*p.precio,grupos:0};const g=Math.floor(c/p.promoN);return{total:g*p.promoP+(c-g*p.promoN)*p.precio,grupos:g}}
+const promoTxt=p=>tienePromo(p)?`${p.promoN} × ${fmt(p.promoP)}`:'';
 const fFecha=iso=>{const d=new Date(iso);return `${d.getDate()} ${MES[d.getMonth()]}`};
 const fHora=iso=>{const d=new Date(iso);return d.toLocaleTimeString('es-CO',{hour:'numeric',minute:'2-digit'})};
 const iniciales=n=>String(n||'?').trim().split(/\s+/).slice(0,2).map(x=>Array.from(x)[0]||'').join('').toUpperCase()||'?';
@@ -867,6 +878,7 @@ function vVender(){
     return `<div class="card sell ${c?'sel':''} ${p.precio&&p.stock>0?'':'off'}" role="button" tabindex="0" aria-label="Agregar ${esc(p.nombre)}" data-a="add" data-id="${p.id}" data-n="${esc(norm(p.nombre))}" ${q&&!norm(p.nombre).includes(q)?'hidden':''}>
       <div class="sell-top">${sello(p.nombre)}${c?`<span class="sell-n" aria-label="${c} en la venta">${c}</span>`:''}</div>
       <b class="sell-name">${esc(p.nombre)}</b>
+      ${tienePromo(p)?`<span class="chip promo">${promoTxt(p)}</span>`:''}
       <span class="price">${p.precio?fmt(p.precio):'<span class="small warn">Sin precio</span>'}</span>
       <span class="small ${p.stock<=0?'neg':bajo?'warn':'muted'}">${p.stock<=0?'Agotado':`Quedan ${fmtN(p.stock-c)}`}</span>
       ${c?`<div class="stepper" data-a="noop"><button data-a="sub" data-id="${p.id}" aria-label="Quitar">${ic('minus',16)}</button><b>${c}</b><button class="plus" data-a="add" data-id="${p.id}" aria-label="Agregar">${ic('plus',16)}</button></div>`:''}
@@ -879,14 +891,14 @@ function vVenderWide(){
 }
 function ticketVenta(){
   const it=Object.entries(UI.cart).filter(([id,c])=>c>0&&prod(id)).map(([id,c])=>({p:prod(id),c}));
-  const tot=it.reduce((a,x)=>a+x.c*x.p.precio,0),gan=it.reduce((a,x)=>a+x.c*(x.p.precio-x.p.costo),0),und=it.reduce((a,x)=>a+x.c,0);
+  const tot=it.reduce((a,x)=>a+precioLinea(x.p,x.c).total,0),gan=it.reduce((a,x)=>a+precioLinea(x.p,x.c).total-x.c*x.p.costo,0),und=it.reduce((a,x)=>a+x.c,0);
   const cs=UI.cliente&&cli(UI.cliente);
   return `<div class="ticket-wrap"><section class="ticket cart-ticket" aria-label="Venta en curso">
     <div class="t-top"><span class="t-tienda">Venta en curso</span>${it.length?'<button class="btn sm ghost" data-a="vaciar">Vaciar</button>':''}</div>
     ${cs?`<div class="small muted" style="margin-top:-4px">Para <b style="color:var(--ink)">${esc(cs.nombre)}</b></div>`:''}
-    ${it.length?`<div class="t-items">${it.map(x=>`<div class="t-item">${sello(x.p.nombre,'sm')}<div class="grow" style="min-width:0"><b class="t-name">${esc(x.p.nombre)}</b><span class="small muted">${fmt(x.p.precio)} c/u</span></div>
+    ${it.length?`<div class="t-items">${it.map(x=>`<div class="t-item">${sello(x.p.nombre,'sm')}<div class="grow" style="min-width:0"><b class="t-name">${esc(x.p.nombre)}</b><span class="small muted">${fmt(x.p.precio)} c/u${precioLinea(x.p,x.c).grupos?` <span class="chip promo">Promo ${promoTxt(x.p)}</span>`:''}</span></div>
       <div class="mini-step"><button data-a="sub" data-id="${x.p.id}" aria-label="Quitar uno">${ic('minus',14)}</button><b>${x.c}</b><button data-a="add" data-id="${x.p.id}" aria-label="Agregar uno">${ic('plus',14)}</button></div>
-      <b class="num t-amt">${fmt(x.c*x.p.precio)}</b></div>`).join('')}</div>`
+      <b class="num t-amt">${fmt(precioLinea(x.p,x.c).total)}</b></div>`).join('')}</div>`
     :`<p class="t-empty muted">Toca un producto para agregarlo a la venta.</p>`}
     <div class="t-perf" aria-hidden="true"></div>
     <div class="t-line"><span>Total${und?` <small class="muted">${und} und</small>`:''}</span><b class="t-big num">${fmt(tot)}</b></div>
@@ -898,8 +910,8 @@ function cartBar(){
   if(ancho())return'';
   const items=Object.entries(UI.cart).filter(([,c])=>c>0);
   if(!items.length)return'';
-  let tot=0,gan=0,und=0;items.forEach(([id,c])=>{const p=prod(id);if(!p)return;tot+=c*p.precio;gan+=c*(p.precio-p.costo);und+=c});
-  return `<div class="cartbar"><div style="flex:1;min-width:0"><div class="t">${fmt(tot)}</div><div class="small" style="opacity:.75">${und} und · ganas ${fmt(gan)}</div></div>
+  let tot=0,gan=0,und=0,promo=false;items.forEach(([id,c])=>{const p=prod(id);if(!p)return;const l=precioLinea(p,c);tot+=l.total;gan+=l.total-c*p.costo;und+=c;if(l.grupos)promo=true});
+  return `<div class="cartbar"><div style="flex:1;min-width:0"><div class="t">${fmt(tot)}</div><div class="small" style="opacity:.75">${und} und · ganas ${fmt(gan)}${promo?' · promo':''}</div></div>
   <button class="btn ghost" data-a="vender" data-pagado="1">Contado</button>
   <button class="btn accent" data-a="fiar">Fiar…</button></div>`;
 }
@@ -1014,7 +1026,7 @@ function vProductos(){
   ${D.productos.length?`<div class="grid pgrid">${D.productos.map(p=>{const g=p.precio-p.costo,m=p.precio?g/p.precio:NaN,bajo=p.stock<=p.minimo;
     return `<div class="card prod"><div class="row between" style="align-items:flex-start">${sello(p.nombre)}<span class="name" style="flex:1;min-width:0;line-height:22px;padding-top:9px">${esc(p.nombre)}</span>
       <button class="iconbtn" data-a="editProd" data-id="${p.id}" aria-label="Editar ${esc(p.nombre)}">${ic('edit',18)}</button></div>
-      <div class="row wrapflex" style="gap:6px;margin-top:8px">${!p.precio||!p.costo?'<span class="chip warn">Falta precio</span>':''}<span class="chip ${p.stock<=0?'bad':bajo&&configurado(p)?'warn':'ok'}">${p.stock<=0?'Sin unidades':`${fmtN(p.stock)} und`}</span></div>
+      <div class="row wrapflex" style="gap:6px;margin-top:8px">${tienePromo(p)?`<span class="chip promo">Promo ${promoTxt(p)}</span>`:''}${!p.precio||!p.costo?'<span class="chip warn">Falta precio</span>':''}<span class="chip ${p.stock<=0?'bad':bajo&&configurado(p)?'warn':'ok'}">${p.stock<=0?'Sin unidades':`${fmtN(p.stock)} und`}</span></div>
       <p class="small muted" style="margin-top:8px">${p.caja&&p.uxc?`Caja de ${fmtN(p.uxc)} und a ${fmt(p.caja)}`:'Sin datos de la caja'}</p>
       ${p.costo&&p.precio?`<div class="profit ${g<0?'bad':''}"><b>${g<0?'−':'+'}${pct(Math.abs(g)/p.costo)}</b><span>${g<0?'pierdes':'ganas'} ${fmtC(Math.abs(g))} por unidad</span></div>`:''}
       <div class="kv"><div><span>Me sale a</span><b>${p.costo?fmtC(p.costo):'—'}</b></div><div><span>Lo vendo a</span><b>${p.precio?fmt(p.precio):'—'}</b></div>
@@ -1399,6 +1411,9 @@ function modalProducto(id){
   <div><p class="eyebrow" style="margin-bottom:8px">2 · ¿A cuánto lo vendes?</p>
   <label class="field"><span>Precio de venta por unidad</span><input name="precio" class="money" type="text" inputmode="numeric" autocomplete="off" value="${fmtIn(p.precio)}" placeholder="Escribe el precio y te digo cuánto ganas"></label></div>
   <div id="calc"></div>
+  <div class="promo-box"><b>Promoción (opcional)</b><p class="small muted">Ej.: lleva 4 por $1.000. Se aplica sola al vender, por grupos.</p>
+    <div class="promo-in"><span>Lleva</span><input name="promoN" type="number" min="2" step="1" inputmode="numeric" value="${p.promoN||''}" placeholder="4"><span>por</span><input name="promoP" class="money" type="text" inputmode="numeric" autocomplete="off" value="${fmtIn(p.promoP)}" placeholder="$ 1.000"></div>
+    <div class="small" id="promoRes"></div></div>
   <div class="sugbox">¿No sabes qué precio poner? Quiero ganar <input id="mk" type="number" min="0" value="50" inputmode="numeric">% sobre lo que me cuesta → <b id="sug" class="num">—</b><button type="button" class="btn sm ghost" data-a="usarSug">Usar</button></div>
   <div><p class="eyebrow" style="margin-bottom:8px">3 · Inventario (en unidades)</p>
   <div class="grid2">
@@ -1420,6 +1435,8 @@ function calcProd(){
     <div class="calc"><div><span>Ganancia</span><b>${pct(g/c)}</b></div><div><span>Margen</span><b>${pct(g/p)}</b></div><div><span>x caja</span><b>${fmt(g*u)}</b></div></div>
     <p class="small muted"><b>Ganancia %</b> = lo que ganas ÷ lo que te costó. <b>Margen</b> = lo que ganas ÷ precio de venta.</p>
     <p class="small muted">Vendiendo la caja completa (${fmtN(u)} und) recibes ${fmt(p*u)} y ganas ${fmt(g*u)}.</p></div>`;
+  const pn=Math.round(num(f.promoN.value)),pp=money(f.promoP.value),pr=$('#promoRes');
+  if(pr){if(pn>=2&&pp>0&&c){const u=pp/pn,gu=u-c;pr.innerHTML=pp>=pn*p&&p?`<span class="warn">Con esa promoción no hay descuento: ${pn} a precio normal cuestan ${fmt(pn*p)}.</span>`:`Cada una queda a <b>${fmtC(u)}</b>. ${gu<0?`<span class="neg">Pierdes ${fmtC(-gu)} por unidad.</span>`:`Ganas <b class="pos">${fmtC(gu)}</b> por unidad (${pct(gu/c)} sobre el costo). El cliente ahorra ${fmt(pn*p-pp)}.`}`}else pr.innerHTML=''}
   const mk=num($('#mk').value);$('#sug').textContent=c?fmt(Math.ceil(c*(1+mk/100)/100)*100):'—';
 }
 function carrito(){return Object.entries(UI.cart).filter(([id,c])=>c>0&&prod(id)).map(([id,c])=>({p:prod(id),c}))}
@@ -1441,11 +1458,11 @@ function modalElegirCliente(){
 }
 function modalConfirmFiar(cid){
   const c=cli(cid);if(!c)return modalElegirCliente();
-  const it=carrito(),tot=it.reduce((a,x)=>a+x.c*x.p.precio,0),antes=saldoCliente(cid),despues=antes+tot;
+  const it=carrito(),tot=it.reduce((a,x)=>a+precioLinea(x.p,x.c).total,0),antes=saldoCliente(cid),despues=antes+tot;
   openModal(`<div class="stack">
   <p class="eyebrow" style="text-align:center">Confirma a quién le fías</p>
   <div class="quien"><span class="avatar xl">${esc(iniciales(c.nombre))}</span><div class="nm">${esc(c.nombre)}</div>${c.area?`<div class="small muted">${esc(c.area)}</div>`:''}</div>
-  <div class="card" style="box-shadow:none;background:var(--surface-100)"><div class="list">${it.map(x=>`<div class="li" style="padding:8px 0"><span class="grow">${x.c}× ${esc(x.p.nombre)}</span><b class="num">${fmt(x.c*x.p.precio)}</b></div>`).join('')}
+  <div class="card" style="box-shadow:none;background:var(--surface-100)"><div class="list">${it.map(x=>`<div class="li" style="padding:8px 0"><span class="grow">${x.c}× ${esc(x.p.nombre)}${precioLinea(x.p,x.c).grupos?` <span class="chip promo">Promo ${promoTxt(x.p)}</span>`:''}</span><b class="num">${fmt(precioLinea(x.p,x.c).total)}</b></div>`).join('')}
   <div class="li" style="padding:10px 0 4px"><b class="grow">Total que se lleva</b><b class="num" style="font-size:18px">${fmt(tot)}</b></div></div></div>
   <p class="small" style="text-align:center">${antes>0.5?`Ya debía ${fmt(antes)} → <b>quedará debiendo <span class="warn">${fmt(despues)}</span></b>`:antes<-0.5?`Tenía ${fmt(-antes)} a favor → ${despues>0.5?`<b>quedará debiendo <span class="warn">${fmt(despues)}</span></b>`:`<b class="pos">le queda ${fmt(-despues)} a favor</b>`}`:`<b>Quedará debiendo <span class="warn">${fmt(despues)}</span></b>`}</p>
   <div class="actions" style="justify-content:space-between"><button type="button" class="btn ghost" data-a="fiar" data-cambiar="1">Cambiar persona</button><button type="button" class="btn accent" data-a="confirmFiar" data-id="${cid}">${ic('check',18)}Sí, fiar a ${esc(c.nombre.split(' ')[0])}</button></div>
@@ -1532,7 +1549,7 @@ const A={
   nuevoCli:d=>modalCliente(null,d.from),
   editCli:d=>modalCliente(d.id),
   delCli:d=>{if(Math.abs(saldoCliente(d.id))>0.5)return toast('Tiene saldo pendiente o a favor: déjalo en cero primero');confirmar('¿Eliminar cliente?','Sus compras y pagos se conservan en los reportes.',()=>{D.clientes=D.clientes.filter(c=>c.id!==d.id);if(UI.cliente===d.id)UI.cliente='';if(UI.cid===d.id)UI.view='fiados';save();render();toast('Cliente eliminado')},'Eliminar')},
-  add:(d,el,e)=>{e.stopPropagation();const p=prod(d.id),c=UI.cart[d.id]||0;if(!p.precio)return toast(`Ponle precio de venta a ${p.nombre} primero`);if(c+1>p.stock)return toast(p.stock<=0?`${p.nombre} está agotado`:`Solo quedan ${fmtN(p.stock)} de ${p.nombre}`);UI.cart[d.id]=c+1;vib();render()},
+  add:(d,el,e)=>{e.stopPropagation();const p=prod(d.id),c=UI.cart[d.id]||0;if(!p.precio)return toast(`Ponle precio de venta a ${p.nombre} primero`);if(c+1>p.stock)return toast(p.stock<=0?`${p.nombre} está agotado`:`Solo quedan ${fmtN(p.stock)} de ${p.nombre}`);UI.cart[d.id]=c+1;vib();render();if(tienePromo(p)&&(c+1)%p.promoN===0)toast(`Promo aplicada: ${p.promoN} ${p.nombre} por ${fmt(p.promoP)}`)},
   sub:(d,el,e)=>{e.stopPropagation();UI.cart[d.id]=Math.max(0,(UI.cart[d.id]||0)-1);render()},
   fiar:d=>{if(!carrito().length)return;if(UI.cliente&&!d.cambiar&&cli(UI.cliente))return modalConfirmFiar(UI.cliente);modalElegirCliente()},
   pickCli:d=>modalConfirmFiar(d.id),
@@ -1540,7 +1557,7 @@ const A={
   quitarCli:()=>{UI.cliente='';render()},
   vender:d=>{
     const pagado=d.pagado==='1';
-    const items=Object.entries(UI.cart).filter(([id,c])=>c>0&&prod(id)).map(([id,c])=>{const p=prod(id);return{productoId:id,nombre:p.nombre,cant:c,precio:p.precio,costo:p.costo}});
+    const items=Object.entries(UI.cart).filter(([id,c])=>c>0&&prod(id)).map(([id,c])=>{const p=prod(id),l=precioLinea(p,c);const it={productoId:id,nombre:p.nombre,cant:c,precio:l.grupos?l.total/c:p.precio,costo:p.costo};if(l.grupos)it.promo=`${p.promoN} por ${p.promoP}`;return it});
     if(!items.length)return;
     if(!pagado&&!UI.cliente)return toast('Elige el cliente para fiar');
     const mal=items.find(i=>{const p=prod(i.productoId);return !p||i.cant>p.stock||!p.precio});
@@ -1608,8 +1625,8 @@ document.addEventListener('submit',e=>{
   const f=e.target;e.preventDefault();const k=f.dataset.form;
   if(k==='producto'){
     const nombre=f.nombre.value.trim();if(!nombre)return;
-    const caja=money(f.caja.value),uxc=Math.max(1,Math.round(num(f.uxc.value)));
-    const data={nombre,caja,uxc,costo:caja/uxc,precio:money(f.precio.value),stock:num(f.stock.value),minimo:num(f.minimo.value)};
+    const caja=money(f.caja.value),uxc=Math.max(1,Math.round(num(f.uxc.value))),promoN=Math.round(num(f.promoN.value)),promoP=money(f.promoP.value);
+    const data={nombre,caja,uxc,costo:caja/uxc,precio:money(f.precio.value),promoN:promoN>=2&&promoP>0?promoN:0,promoP:promoN>=2&&promoP>0?promoP:0,stock:num(f.stock.value),minimo:num(f.minimo.value)};
     if(f.dataset.id)Object.assign(prod(f.dataset.id),data);else D.productos.push({id:uid(),...data});
     save();closeModal();render();toast('Producto guardado');
   }
